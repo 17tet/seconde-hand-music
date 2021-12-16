@@ -107,6 +107,8 @@ onMounted(()=>{
       }else{
         tt++;
         for(let i = 0; i < circles.length; i++){
+          p.strokeWeight(4);
+          p.stroke(255);
           p.fill(circles[i].a, 40, 255, 0.5);
           p.circle(circles[i].x, circles[i].y, circles[i].size);
         }

@@ -16,5 +16,10 @@ export default {
 <style>
   body {
     background-color: rgb(0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+
+
 </style>
