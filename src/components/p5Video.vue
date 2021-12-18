@@ -227,6 +227,8 @@ onMounted(()=>{
 
   let myp5 = new p5(sketch);
 })
+
+
 </script>
 
 <style>
@@ -234,6 +236,10 @@ onMounted(()=>{
     transform : scale(-1, 1);
     position: absolute;
     z-index: 99;
+    top: 50px;
+    left: 0;
+    right:0;
+    margin: 0 auto;
   }
 
   #input_video {
@@ -242,5 +248,9 @@ onMounted(()=>{
     z-index: -1;
     border: 3px #fff solid;
     border-radius: 10px;
+    top: 50px;
+    left: 0;
+    right:0;
+    margin: 0 auto;
   }
 </style>
