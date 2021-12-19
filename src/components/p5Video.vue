@@ -54,8 +54,7 @@ onMounted(() => {
 
   let active_inst;
 
-  let timer;
-
+  let active_color = 0;
   const colorbank = [60, 120, 180, 240, 300];
 
   let area; // add
@@ -270,9 +269,10 @@ onMounted(() => {
         -8 + index * (area + area) + area
       );
       let y = p.random(50, p.height - 100);
-      let a = p.random(colorbank);
+      let a = colorbank[active_color];
       let b = p.random(0, 255);
       let c = p.random(0, 255);
+      active_color += 1;
 
       circles.push({
         x: x,
