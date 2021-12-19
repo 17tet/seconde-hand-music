@@ -33,5 +33,9 @@ export default {
     align-items: center;
   }
 
+  .canvas{
+    transform: scale(-1,-1,-1);
+  }
+
 
 </style>

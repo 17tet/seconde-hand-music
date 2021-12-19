@@ -93,10 +93,6 @@ onMounted(() => {
       canvas.id("canvas");
 
       p.colorMode(p.HSB);
-    };
-
-    p.draw = function () {
-      p.clear();
 
       active_music = music_piano
 
@@ -104,8 +100,11 @@ onMounted(() => {
       piano_inst = instrument[1];
       bell_inst = instrument[2];
 
-
       piano_inst = active_instrument[1];
+    };
+
+    p.draw = function () {
+      p.clear();
 
       elec = p.image(elec_inst, p.width / 2 - 182, 50, 64, 64);
       piano = p.image(piano_inst, p.width / 2 - 32, 50, 64, 64);
@@ -152,6 +151,7 @@ onMounted(() => {
     };
 
     p.changeInstrument = (changement) => {
+      console.log("Change instrument");
       switch (changement) {
         case -1:
           if (active_inst == active_instrument[0]) {
@@ -160,30 +160,45 @@ onMounted(() => {
             piano_inst = instrument[1];
             bell_inst = active_instrument[2];
             active_music = music_bell;
+            p.redraw();
           } else if (active_inst == active_instrument[1]) {
             active_inst = active_instrument[0];
             elec_inst = active_instrument[0];
             piano_inst = instrument[1];
             bell_inst = instrument[2];
             active_music = music_piano;
+            p.redraw();
           } else {
             active_inst = active_instrument[1];
-            elec_inst = active_instrument[0];
-            piano_inst = instrument[1];
+            elec_inst = instrument[0];
+            piano_inst = active_instrument[1];
             bell_inst = instrument[2];
             active_music = music_elec;
+            p.redraw();
           }
           return active_inst;
         case 1:
           if (active_inst == active_instrument[0]) {
             active_inst = active_instrument[1];
+            elec_inst = instrument[0];
+            piano_inst = active_instrument[1];
+            bell_inst = instrument[2];
             active_music = music_piano;
+            p.redraw();
           } else if (active_inst == active_instrument[1]) {
             active_inst = active_instrument[2];
+            elec_inst = instrument[0];
+            piano_inst = instrument[1];
+            bell_inst = active_instrument[2];
             active_music = music_bell;
+            p.redraw();
           } else {
             active_inst = active_instrument[0];
+            elec_inst = active_instrument[0];
+            piano_inst = instrument[1];
+            bell_inst = instrument[2];
             active_music = music_elec;
+            p.redraw();
           }
           return active_inst;
       }
