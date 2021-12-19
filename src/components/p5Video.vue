@@ -213,14 +213,14 @@ onMounted(() => {
           p.strokeWeight(4);
           p.stroke(255);
           p.fill(circles[i].a, 50, 255, 0.5);
-          p.circle(circles[i].x, circles[i].y, circles[i].size);
+          p.circle(circles[i].x, circles[i].y+100, circles[i].size);
         }
         if (tt > TIMEOUT) {
           for (let i = 0; i < circles.length; i++) {
             circles[i].size--;
             if (circles[i].size < 5) {
               circles[i].size = p.random(50, area); // add// add
-              circles[i].y = p.random(50, p.height - 100); // add
+              circles[i].y = p.random(50, p.height); // add
               // circles.splice(i,1)
               // music[i].play();
             }
@@ -330,8 +330,8 @@ onMounted(() => {
 
           p.stroke(hue, 40, 255);
           p.point(x, y);
-          p.circleCrash(x, y, j); 
-          p.changeActiveInstrument(x,y,j);
+          p.circleCrash(x, y-100, j); 
+          p.changeActiveInstrument(x,y-100,j);
         }
       }
     };
