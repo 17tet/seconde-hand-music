@@ -1,7 +1,7 @@
 <template>
 <div>
-   <h1>Turn on your computer's volume and have fun:)</h1>
-   <h2>Match the colour of your finger to the colour of the circle</h2>
+   <h1>Turn up your computer's volume and have fun:)</h1>
+   <h2>Match the colour of your finger to the colour of the circle, you can also switch instruments by touching the instrument with your index</h2>
  </div>
   <videoEl></videoEl>
   
@@ -30,9 +30,10 @@ export default {
   }
   h2{
       box-sizing:border-box;
-      margin:15;
+      margin:660px;
       color:#4dfaecea;
       text-align: center;
+      width: 600px; 
   }
   body {
     background-color: rgba(0, 0, 0, 0.938);
