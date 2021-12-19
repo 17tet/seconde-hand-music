@@ -1,6 +1,6 @@
 <template>
 <div>
-   <h1>Welcome to second hand music:)</h1>
+   <h1>Turn on your computer's volume and have fun:)</h1>
  </div>
   <videoEl></videoEl>
   

@@ -212,14 +212,14 @@ onMounted(() => {
         for (let i = 0; i < circles.length; i++) {
           p.strokeWeight(4);
           p.stroke(255);
-          p.fill(circles[i].a, 40, 255, 0.5);
+          p.fill(circles[i].a, 50, 255, 0.5);
           p.circle(circles[i].x, circles[i].y, circles[i].size);
         }
         if (tt > TIMEOUT) {
           for (let i = 0; i < circles.length; i++) {
             circles[i].size--;
             if (circles[i].size < 5) {
-              circles[i].size = p.random(60, area); // add// add
+              circles[i].size = p.random(50, area); // add// add
               circles[i].y = p.random(50, p.height - 100); // add
               // circles.splice(i,1)
               // music[i].play();
@@ -284,8 +284,8 @@ onMounted(() => {
         20 + index * (area + area) + area
       );
       let x = p.random(
-        20 + index * (area + area),
-        20 + index * (area + area) + area
+        -8 + index * (area + area),
+        -8 + index * (area + area) + area
       );
       let y = p.random(50, p.height - 100);
       let a = p.random(colorbank);
