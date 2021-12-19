@@ -3,55 +3,91 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted } from "vue";
 
-onMounted(()=>{
+onMounted(() => {
   let detections = {};
-  const videoElement = document.getElementById('input_video');
+  const videoElement = document.getElementById("input_video");
   function getHands(results) {
     detections = results;
   }
-  const hands = new Hands({locateFile: (file) => {
-    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-  }});
+  const hands = new Hands({
+    locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    },
+  });
   hands.setOptions({
     maxNumHands: 2,
     modelComplexity: 1,
     minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5
+    minTrackingConfidence: 0.5,
   });
   hands.onResults(getHands);
   const camera = new Camera(videoElement, {
     onFrame: async () => {
-      await hands.send({image: videoElement});
+      await hands.send({ image: videoElement });
     },
     width: 800,
-    height: 640
+    height: 640,
   });
   camera.start();
-    let canvas;
+  let canvas;
   let circles = [];
   let tt = 0;
   const TIMEOUT = 1;
   const music = [];
+  const music_bell = [];
+  const music_piano = [];
+  const music_elec = [];
 
-  const colorbank = [
-    60,
-    120,
-    180,
-    240,
-    300
-  ]
+  const instrument = [];
+  const active_instrument = [];
+  let active_music
+
+  let elec;
+  let piano;
+  let bell;
+
+  let elec_inst;
+  let piano_inst;
+  let bell_inst;
+
+  let active_inst;
+
+  let timer;
+
+  const colorbank = [60, 120, 180, 240, 300];
 
   let area; // add
   let sketch = function (p) {
     p.preload = () => {
-      music[0] = p.loadSound("assets/Do.m4a");
-      music[1] = p.loadSound("assets/Fa.mp3");
-      music[2] = p.loadSound("assets/La.m4a");
-      music[3] = p.loadSound("assets/Mi.m4a");
-      music[4] = p.loadSound("assets/Re.m4a");
-    }
+      music_bell[0] = p.loadSound("assets/DO_BELL.mp3");
+      music_bell[1] = p.loadSound("assets/SOL_BELL.mp3");
+      music_bell[2] = p.loadSound("assets/LA_BELL.mp3");
+      music_bell[3] = p.loadSound("assets/MI_BELL.mp3");
+      music_bell[4] = p.loadSound("assets/RE_BELL.mp3");
+
+      music_piano[0] = p.loadSound("assets/DO_PIANO.mp3");
+      music_piano[1] = p.loadSound("assets/SOL_PIANO.mp3");
+      music_piano[2] = p.loadSound("assets/LA_PIANO.mp3");
+      music_piano[3] = p.loadSound("assets/MI_PIANO.mp3");
+      music_piano[4] = p.loadSound("assets/RE_PIANO.mp3");
+
+      music_elec[0] = p.loadSound("assets/DO_ELEC.mp3");
+      music_elec[1] = p.loadSound("assets/SOL_ELEC.mp3");
+      music_elec[2] = p.loadSound("assets/LA_ELEC.mp3");
+      music_elec[3] = p.loadSound("assets/MI_ELEC.mp3");
+      music_elec[4] = p.loadSound("assets/RE_ELEC.mp3");
+
+      instrument[0] = p.loadImage("assets/elec.png");
+      instrument[1] = p.loadImage("assets/piano.png");
+      instrument[2] = p.loadImage("assets/bell.png");
+
+      active_instrument[0] = p.loadImage("assets/active_elec.png");
+      active_instrument[1] = p.loadImage("assets/active_piano.png");
+      active_instrument[2] = p.loadImage("assets/active_bell.png");
+    };
+
     p.setup = function () {
       canvas = p.createCanvas(800, 640);
       canvas.id("canvas");
@@ -60,25 +96,25 @@ onMounted(()=>{
     };
 
     p.draw = function () {
-      // let draw_keyboard = true;
       p.clear();
 
-  //     // Draw a keyboard
-  //     if (draw_keyboard) {
-  //       let x = 0;
-  //       for (let i = 0; i < 10; i++) {
-  //         // Draw the key
-  //         let border_stroke_color;
-  //         border_stroke_color = p.stroke(0);
-  //         p.strokeWeight(1);
-  //         p.noFill();
-  //         p.rect(i * 80, 0, 80, p.height);
-  //         x += 100;
-  //       }
+      active_music = music_piano
 
-        p.drawCircle()
-      //   draw_keyboard = false;
-      // }
+      elec_inst = instrument[0];
+      piano_inst = instrument[1];
+      bell_inst = instrument[2];
+
+
+      piano_inst = active_instrument[1];
+
+      elec = p.image(elec_inst, p.width / 2 - 182, 50, 64, 64);
+      piano = p.image(piano_inst, p.width / 2 - 32, 50, 64, 64);
+      bell = p.image(bell_inst, p.width / 2 + 118, 50, 64, 64);
+
+      p.circle(100, 82, 64);
+      p.circle(p.width - 100, 82, 64);
+
+      p.drawCircle();
 
       if (detections != undefined) {
         if (detections.multiHandLandmarks != undefined) {
@@ -93,32 +129,83 @@ onMounted(()=>{
           // p.drawLines([17, 18, 19, 20]); //pinky
 
           // p.drawLandmarks([0, 1], 0); //palm base
-          p.drawLandmarks([4,5], 60); //thumb
-          p.drawLandmarks([8,9], 120); //index finger
+          p.drawLandmarks([4, 5], 60); //thumb
+          p.drawLandmarks([8, 9], 120); //index finger
           p.drawLandmarks([12, 13], 180); //middle finger
           p.drawLandmarks([16, 17], 240); //ring finger
           p.drawLandmarks([20, 21], 300); //pinky
         }
       }
     };
+
+    p.changeActiveInstrument = (x, y, finger_index) => {
+      if (finger_index == 8) {
+        if (p.dist(x, y, 100, 82) < 64) {
+          console.log("Left");
+          p.changeInstrument(-1)
+        } 
+        else if (p.dist(x, y, p.width - 100, 82) < 64) {
+          console.log("Right");
+          p.changeInstrument(1)
+        }
+      }
+    };
+
+    p.changeInstrument = (changement) => {
+      switch (changement) {
+        case -1:
+          if (active_inst == active_instrument[0]) {
+            active_inst = active_instrument[-1];
+            elec_inst = instrument[0];
+            piano_inst = instrument[1];
+            bell_inst = active_instrument[2];
+            active_music = music_bell;
+          } else if (active_inst == active_instrument[1]) {
+            active_inst = active_instrument[0];
+            elec_inst = active_instrument[0];
+            piano_inst = instrument[1];
+            bell_inst = instrument[2];
+            active_music = music_piano;
+          } else {
+            active_inst = active_instrument[1];
+            elec_inst = active_instrument[0];
+            piano_inst = instrument[1];
+            bell_inst = instrument[2];
+            active_music = music_elec;
+          }
+          return active_inst;
+        case 1:
+          if (active_inst == active_instrument[0]) {
+            active_inst = active_instrument[1];
+            active_music = music_piano;
+          } else if (active_inst == active_instrument[1]) {
+            active_inst = active_instrument[2];
+            active_music = music_bell;
+          } else {
+            active_inst = active_instrument[0];
+            active_music = music_elec;
+          }
+          return active_inst;
+      }
+    };
+
     p.drawCircle = () => {
-      if(circles.length < 5){
-        p.generateCircle(circles.length) // add
-      }else{
+      if (circles.length < 5) {
+        p.generateCircle(circles.length); // add
+      } else {
         tt++;
-        for(let i = 0; i < circles.length; i++){
+        for (let i = 0; i < circles.length; i++) {
           p.strokeWeight(4);
           p.stroke(255);
           p.fill(circles[i].a, 40, 255, 0.5);
           p.circle(circles[i].x, circles[i].y, circles[i].size);
         }
-        if(tt > TIMEOUT)
-        {
-          for(let i = 0; i < circles.length; i++){
+        if (tt > TIMEOUT) {
+          for (let i = 0; i < circles.length; i++) {
             circles[i].size--;
-            if(circles[i].size < 5){
-              circles[i].size = p.random(60, area) // add// add
-              circles[i].y = p.random(50, p.height - 100) // add
+            if (circles[i].size < 5) {
+              circles[i].size = p.random(60, area); // add// add
+              circles[i].y = p.random(50, p.height - 100); // add
               // circles.splice(i,1)
               // music[i].play();
             }
@@ -126,38 +213,79 @@ onMounted(()=>{
           tt = 0;
         }
       }
-    }
-    p.circleCrash = (x, y) => {
-      for(let i = 0; i < circles.length; i++){
-          if(p.dist(x, y, circles[i].x, circles[i].y) < circles[i].size){
-            // circles.splice(i,1)
-            console.log(x);
-            console.log(y);
-            circles[i].size = 6
-            music[i].play();
-          }
-      }
-    }
-    p.generateCircle = (index) => {
+    };
 
+    p.matchingColorwithFinger = (finger_index, circle_color) => {
+      let match = false;
+      switch (finger_index) {
+        case 4:
+          if (circle_color == 60) {
+            match = true;
+          }
+          break;
+        case 8:
+          if (circle_color == 120) {
+            match = true;
+          }
+          break;
+        case 12:
+          if (circle_color == 180) {
+            match = true;
+          }
+          break;
+        case 16:
+          if (circle_color == 240) {
+            match = true;
+          }
+          break;
+        case 20:
+          if (circle_color == 300) {
+            match = true;
+          }
+          break;
+        default:
+          match = false;
+          break;
+      }
+      return match;
+    };
+
+    p.circleCrash = (x, y, finger_index) => {
+      for (let i = 0; i < circles.length; i++) {
+        if (p.dist(x, y, circles[i].x, circles[i].y) < circles[i].size) {
+          // circles.splice(i,1)
+          if (p.matchingColorwithFinger(finger_index, circles[i].a)) {
+            circles[i].size = 6;
+            active_music[i].play();
+          }
+        }
+      }
+    };
+
+    p.generateCircle = (index) => {
       area = p.int(p.width / 9); // add
-      console.log(20 + index * (area + area) , 20 + index * (area + area)  + area)
-      let x = p.random(20 + index * (area + area) , 20 + index * (area + area)  + area)
-      let y = p.random(50, p.height - 100)
+      console.log(
+        20 + index * (area + area),
+        20 + index * (area + area) + area
+      );
+      let x = p.random(
+        20 + index * (area + area),
+        20 + index * (area + area) + area
+      );
+      let y = p.random(50, p.height - 100);
       let a = p.random(colorbank);
       let b = p.random(0, 255);
       let c = p.random(0, 255);
 
-        circles.push({
-          x: x,
-          y: y,
-          a: a,
-          b: b,
-          c: c,
-          size: p.random(60, area)
-        })
-
-    }
+      circles.push({
+        x: x,
+        y: y,
+        a: a,
+        b: b,
+        c: c,
+        size: p.random(60, area),
+      });
+    };
     p.drawHands = function () {
       for (let i = 0; i < detections.multiHandLandmarks.length; i++) {
         for (let j = 0; j < detections.multiHandLandmarks[i].length; j++) {
@@ -166,7 +294,7 @@ onMounted(()=>{
 
           let z = detections.multiHandLandmarks[i][j].z;
           p.strokeWeight(0);
-          p.textFont('Helvetica Neue');
+          p.textFont("Helvetica Neue");
           p.text(j, x, y);
           p.stroke(255);
           p.strokeWeight(10);
@@ -187,22 +315,8 @@ onMounted(()=>{
 
           p.stroke(hue, 40, 255);
           p.point(x, y);
-          p.circleCrash(x, y); //
-          // if (
-          //   detections.multiHandLandmarks[i][8].x > 0 &&
-          //   detections.multiHandLandmarks[i][8].x < 0.1 &&
-          //   detections.multiHandLandmarks[i][8].y > 0 &&
-          //   detections.multiHandLandmarks[i][8].y < p.height
-          // ) {
-          //   p.rect(0, 0, 80, p.height);
-          // } else if (
-          //   detections.multiHandLandmarks[i][8].x > 0.1 &&
-          //   detections.multiHandLandmarks[i][8].x < 0.2 &&
-          //   detections.multiHandLandmarks[i][8].y > 0 &&
-          //   detections.multiHandLandmarks[i][8].y < p.height
-          // ) {
-          //   p.rect(80, 0, 80, p.height);
-          // }
+          p.circleCrash(x, y, j); 
+          p.changeActiveInstrument(x,y,j);
         }
       }
     };
@@ -226,31 +340,29 @@ onMounted(()=>{
   };
 
   let myp5 = new p5(sketch);
-})
-
-
+});
 </script>
 
 <style>
-  #canvas {
-    transform : scale(-1, 1);
-    position: absolute;
-    z-index: 99;
-    top: 50px;
-    left: 0;
-    right:0;
-    margin: 0 auto;
-  }
+#canvas {
+  transform: scale(-1, 1);
+  position: absolute;
+  z-index: 99;
+  top: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
 
-  #input_video {
-    transform : scale(-1, 1);
-    position: absolute;
-    z-index: -1;
-    border: 3px #fff solid;
-    border-radius: 10px;
-    top: 50px;
-    left: 0;
-    right:0;
-    margin: 0 auto;
-  }
+#input_video {
+  transform: scale(-1, 1);
+  position: absolute;
+  z-index: -1;
+  border: 3px #fff solid;
+  border-radius: 10px;
+  top: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
 </style>
