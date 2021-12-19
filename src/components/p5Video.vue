@@ -110,8 +110,7 @@ onMounted(() => {
       piano = p.image(piano_inst, p.width / 2 - 32, 50, 64, 64);
       bell = p.image(bell_inst, p.width / 2 + 118, 50, 64, 64);
 
-      p.circle(100, 82, 64);
-      p.circle(p.width - 100, 82, 64);
+      
 
       p.drawCircle();
 
@@ -139,14 +138,22 @@ onMounted(() => {
 
     p.changeActiveInstrument = (x, y, finger_index) => {
       if (finger_index == 8) {
-        if (p.dist(x, y, 100, 82) < 64) {
-          console.log("Left");
-          p.changeInstrument(-1)
-        } 
-        else if (p.dist(x, y, p.width - 100, 82) < 64) {
+        if (p.dist(x, y, p.width / 2 - 182, 50) < 64) {
           console.log("Right");
-          p.changeInstrument(1)
+          p.changeInstrument(1);
+          return
+        } 
+        if (p.dist(x, y, p.width / 2 - 32, 50) < 64) {
+          console.log("Middle");
+          p.changeInstrument(0);
+          return
         }
+        if (p.dist(x, y, p.width / 2 + 118, 50) < 64) {
+          console.log("Left");
+          p.changeInstrument(-1);
+          return
+        }
+        return
       }
     };
 
@@ -154,53 +161,28 @@ onMounted(() => {
       console.log("Change instrument");
       switch (changement) {
         case -1:
-          if (active_inst == active_instrument[0]) {
-            active_inst = active_instrument[-1];
-            elec_inst = instrument[0];
-            piano_inst = instrument[1];
-            bell_inst = active_instrument[2];
-            active_music = music_bell;
-            p.redraw();
-          } else if (active_inst == active_instrument[1]) {
-            active_inst = active_instrument[0];
-            elec_inst = active_instrument[0];
-            piano_inst = instrument[1];
-            bell_inst = instrument[2];
-            active_music = music_piano;
-            p.redraw();
-          } else {
-            active_inst = active_instrument[1];
-            elec_inst = instrument[0];
-            piano_inst = active_instrument[1];
-            bell_inst = instrument[2];
-            active_music = music_elec;
-            p.redraw();
-          }
-          return active_inst;
+          active_inst = active_instrument[-1];
+          elec_inst = instrument[0];
+          piano_inst = instrument[1];
+          bell_inst = active_instrument[2];
+          active_music = music_bell;
+          p.redraw();
+          break;
         case 1:
-          if (active_inst == active_instrument[0]) {
-            active_inst = active_instrument[1];
-            elec_inst = instrument[0];
-            piano_inst = active_instrument[1];
-            bell_inst = instrument[2];
-            active_music = music_piano;
-            p.redraw();
-          } else if (active_inst == active_instrument[1]) {
-            active_inst = active_instrument[2];
-            elec_inst = instrument[0];
-            piano_inst = instrument[1];
-            bell_inst = active_instrument[2];
-            active_music = music_bell;
-            p.redraw();
-          } else {
-            active_inst = active_instrument[0];
-            elec_inst = active_instrument[0];
-            piano_inst = instrument[1];
-            bell_inst = instrument[2];
-            active_music = music_elec;
-            p.redraw();
-          }
-          return active_inst;
+          active_inst = active_instrument[0];
+          elec_inst = active_instrument[0];
+          piano_inst = instrument[1];
+          bell_inst = instrument[2];
+          active_music = music_elec;
+          p.redraw();
+          break;
+        case 0:
+          active_inst = active_instrument[1];
+          elec_inst = instrument[0];
+          piano_inst = active_instrument[1];
+          bell_inst = instrument[2];
+          active_music = music_piano;
+          p.redraw();
       }
     };
 
@@ -331,7 +313,7 @@ onMounted(() => {
           p.stroke(hue, 40, 255);
           p.point(x, y);
           p.circleCrash(x, y-100, j); 
-          p.changeActiveInstrument(x,y-100,j);
+          p.changeActiveInstrument(x,y,j);
         }
       }
     };
