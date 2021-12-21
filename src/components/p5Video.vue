@@ -31,18 +31,27 @@ onMounted(() => {
     height: 640,
   });
   camera.start();
+
+  jQuery(function ($) {
+    // Here, $ === jQuery
+    $(window).on("load", function () {
+      $(".loader-wrapper").fadeOut("slow");
+    });
+  });
+
+  //#region P5.JS
   let canvas;
   let circles = [];
   let tt = 0;
   const TIMEOUT = 1;
-  const music = [];
+
   const music_bell = [];
   const music_piano = [];
   const music_elec = [];
 
   const instrument = [];
   const active_instrument = [];
-  let active_music
+  let active_music;
 
   let elec;
   let piano;
@@ -51,8 +60,6 @@ onMounted(() => {
   let elec_inst;
   let piano_inst;
   let bell_inst;
-
-  let active_inst;
 
   let active_color = 0;
   const colorbank = [60, 120, 180, 240, 300];
@@ -93,7 +100,7 @@ onMounted(() => {
 
       p.colorMode(p.HSB);
 
-      active_music = music_piano
+      active_music = music_piano;
 
       elec_inst = instrument[0];
       piano_inst = instrument[1];
@@ -108,8 +115,6 @@ onMounted(() => {
       elec = p.image(elec_inst, p.width / 2 - 182, 50, 64, 64);
       piano = p.image(piano_inst, p.width / 2 - 32, 50, 64, 64);
       bell = p.image(bell_inst, p.width / 2 + 118, 50, 64, 64);
-
-      
 
       p.drawCircle();
 
@@ -140,19 +145,19 @@ onMounted(() => {
         if (p.dist(x, y, p.width / 2 - 182, 50) < 64) {
           console.log("Right");
           p.changeInstrument(1);
-          return
-        } 
+          return;
+        }
         if (p.dist(x, y, p.width / 2 - 32, 50) < 64) {
           console.log("Middle");
           p.changeInstrument(0);
-          return
+          return;
         }
         if (p.dist(x, y, p.width / 2 + 118, 50) < 64) {
           console.log("Left");
           p.changeInstrument(-1);
-          return
+          return;
         }
-        return
+        return;
       }
     };
 
@@ -160,7 +165,6 @@ onMounted(() => {
       console.log("Change instrument");
       switch (changement) {
         case -1:
-          active_inst = active_instrument[-1];
           elec_inst = instrument[0];
           piano_inst = instrument[1];
           bell_inst = active_instrument[2];
@@ -168,7 +172,6 @@ onMounted(() => {
           p.redraw();
           break;
         case 1:
-          active_inst = active_instrument[0];
           elec_inst = active_instrument[0];
           piano_inst = instrument[1];
           bell_inst = instrument[2];
@@ -176,7 +179,6 @@ onMounted(() => {
           p.redraw();
           break;
         case 0:
-          active_inst = active_instrument[1];
           elec_inst = instrument[0];
           piano_inst = active_instrument[1];
           bell_inst = instrument[2];
@@ -194,7 +196,7 @@ onMounted(() => {
           p.strokeWeight(4);
           p.stroke(255);
           p.fill(circles[i].a, 50, 255, 0.5);
-          p.circle(circles[i].x, circles[i].y+100, circles[i].size);
+          p.circle(circles[i].x, circles[i].y + 100, circles[i].size);
         }
         if (tt > TIMEOUT) {
           for (let i = 0; i < circles.length; i++) {
@@ -312,8 +314,8 @@ onMounted(() => {
 
           p.stroke(hue, 40, 255);
           p.point(x, y);
-          p.circleCrash(x, y-100, j); 
-          p.changeActiveInstrument(x,y,j);
+          p.circleCrash(x, y - 100, j);
+          p.changeActiveInstrument(x, y, j);
         }
       }
     };
@@ -338,28 +340,33 @@ onMounted(() => {
 
   let myp5 = new p5(sketch);
 });
+
+//#endregion
 </script>
 
 <style>
 #canvas {
   transform: scale(-1, 1);
+  display: flex;
+  justify-content: left;
   position: absolute;
   z-index: 99;
-  top: 50px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
+  top: 80px;
+  margin-left: 110px;
+  /* right: 0;
+  margin: 0 auto; */
 }
 
 #input_video {
   transform: scale(-1, 1);
-  position: absolute;
+  display: flex;
+  justify-content: left;
   z-index: -1;
   border: 3px #fff solid;
   border-radius: 10px;
-  top: 50px;
-  left: 0;
+  top: 150px;
+  margin-left: 110px;/* 
   right: 0;
-  margin: 0 auto;
+  margin: 0 auto; */
 }
 </style>
