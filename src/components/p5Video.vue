@@ -346,13 +346,12 @@ onMounted(() => {
 
 <style>
 #canvas {
-  width: 100%;
   display: flex;
   transform: scale(-1, 1);
-  position: absolute;
+  position: relative;
   z-index: 1;
-  top: 80px;
-  margin-top: 45px;
+  margin-top: -900px;
+  /* margin-top: 45px; */
   justify-content: space-around;
   margin-right: auto;
   margin-left: auto;
