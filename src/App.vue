@@ -13,17 +13,18 @@
 
   <div class="content">
     <videoEl></videoEl>
-    <div class="rules">
-      <h2>How to play ?</h2>
-      <p>
-        ♫ Match the colour of your finger to the colour of the circle to play a
-        note
-      </p>
-      <p>
-        ♫ Switch the instruments by touching one of the instruments up above
-        with your index
-      </p>
-    </div>
+  </div>
+
+  <div class="rules">
+    <h2>How to play ?</h2>
+    <p>
+      ♫ Match the colour of your finger to the colour of the circle to play a
+      note
+    </p>
+    <p>
+      ♫ Switch the instruments by touching one of the instruments up above with
+      your index
+    </p>
   </div>
 
   <div class="footer">
@@ -45,6 +46,7 @@ export default {
 
 <style>
 html {
+  width: 100%;
   height: 100%;
 }
 
@@ -52,7 +54,6 @@ body {
   background-color: #242f3f;
   margin: 0;
   color: #fff;
-  height: 50vw;
   min-height: 100%;
   padding: 0;
 }
@@ -88,14 +89,19 @@ h2 {
   margin-top: 50px;
 }
 
+.rules {
+  padding-bottom: 50px;
+}
+
 .rules p {
   font-size: 24px;
+  text-align: center;
 }
 
 .footer {
   display: flex;
   background-color: #24827c;
-  position: absolute;
+  position: fixed;
   margin-top: 50px;
   bottom: 0;
   left: 0;
@@ -165,10 +171,4 @@ h2 {
     height: 0%;
   }
 }
-
-/* @media (max-width: 1024px) {
-  .content {
-    flex-wrap: wrap;
-  } */
-/* } */
 </style>

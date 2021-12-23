@@ -346,29 +346,62 @@ onMounted(() => {
 
 <style>
 #canvas {
-  transform: scale(-1, 1);
+  width: 100%;
   display: flex;
-  justify-content: left;
+  transform: scale(-1, 1);
   position: absolute;
   z-index: 1;
   top: 80px;
-  margin-top: 50px;
-  margin-left: 140px;
-  /* right: 0;
-  margin: 0 auto; */
+  margin-top: 45px;
+  justify-content: space-around;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 }
+
 
 #input_video {
   transform: scale(-1, 1);
-  display: flex;
-  justify-content: left;
   z-index: -1;
   border: 3px #fff solid;
   border-radius: 10px;
   top: 150px;
-  margin-left: 110px;
-  /* 
-  right: 0;
+  /* margin-left: 110px; */
+  /* right: 0;
   margin: 0 auto; */
 }
+
+/* @media (max-width: 1250px) {
+  #input_video {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #canvas {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 1650px) {
+  #input_video {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #canvas {
+    display: block;
+    justify-content: space-around;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+} */
 </style>
