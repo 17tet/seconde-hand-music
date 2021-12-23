@@ -350,9 +350,10 @@ onMounted(() => {
   display: flex;
   justify-content: left;
   position: absolute;
-  z-index: 99;
+  z-index: 1;
   top: 80px;
-  margin-left: 110px;
+  margin-top: 50px;
+  margin-left: 140px;
   /* right: 0;
   margin: 0 auto; */
 }
@@ -365,7 +366,8 @@ onMounted(() => {
   border: 3px #fff solid;
   border-radius: 10px;
   top: 150px;
-  margin-left: 110px;/* 
+  margin-left: 110px;
+  /* 
   right: 0;
   margin: 0 auto; */
 }

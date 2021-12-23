@@ -11,14 +11,24 @@
     <span class="loader"><span class="loader-inner"></span></span>
   </div>
 
-  <videoEl></videoEl>
+  <div class="content">
+    <videoEl></videoEl>
+    <div class="rules">
+      <h2>How to play ?</h2>
+      <p>
+        ♫ Match the colour of your finger to the colour of the circle to play a
+        note
+      </p>
+      <p>
+        ♫ Switch the instruments by touching one of the instruments up above
+        with your index
+      </p>
+    </div>
+  </div>
 
-  <h2>
-    Match the colour of your finger to the colour of the circle, you can also
-    switch instruments by touching the instrument with your index
-  </h2>
-
-  <div class="footer"></div>
+  <div class="footer">
+    <p class="footer_text">Made by WU Jianqiao and TEDJINI Meriem.</p>
+  </div>
 </template>
 
 <script>
@@ -34,10 +44,17 @@ export default {
 </script>
 
 <style>
+html {
+  height: 100%;
+}
+
 body {
   background-color: #242f3f;
   margin: 0;
   color: #fff;
+  height: 50vw;
+  min-height: 100%;
+  padding: 0;
 }
 
 .header {
@@ -53,27 +70,39 @@ body {
   font-size: 32px;
 }
 
-.footer {
-  display: flex;
-  background-color: #24827c;
-  bottom: 0;
-  height: 5vh;
-  justify-content: center;
-  align-items: center;
-}
-
 h1 {
   box-sizing: border-box;
-  margin: 0;
+  margin-top: 25px;
   text-align: center;
 }
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
 h2 {
   box-sizing: border-box;
   text-align: center;
+  margin-top: 50px;
 }
 
-.canvas {
-  transform: scale(-1, -1, -1);
+.rules p {
+  font-size: 24px;
+}
+
+.footer {
+  display: flex;
+  background-color: #24827c;
+  position: absolute;
+  margin-top: 50px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5vh;
+  justify-content: center;
+  align-items: center;
 }
 
 .loader-wrapper {
@@ -136,4 +165,10 @@ h2 {
     height: 0%;
   }
 }
+
+/* @media (max-width: 1024px) {
+  .content {
+    flex-wrap: wrap;
+  } */
+/* } */
 </style>
