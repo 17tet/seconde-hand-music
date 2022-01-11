@@ -66,6 +66,10 @@ onMounted(() => {
   let active_color = 0;
   const colorbank = [60, 120, 180, 240, 300];
 
+  let active_button = true;
+  let start_button;
+  let free_button;
+
   let area; // add
   let sketch = function (p) {
     p.preload = () => {
@@ -94,7 +98,12 @@ onMounted(() => {
       active_instrument[0] = p.loadImage("assets/active_elec.png");
       active_instrument[1] = p.loadImage("assets/active_piano.png");
       active_instrument[2] = p.loadImage("assets/active_bell.png");
+
+      
+      start_button = p.loadImage("assets/start_button.png");
+      free_button = p.loadImage("assets/free_button.png");
     };
+
 
     p.setup = function () {
       canvas = p.createCanvas(800, 640);
@@ -111,14 +120,32 @@ onMounted(() => {
       piano_inst = active_instrument[1];
     };
 
+
     p.draw = function () {
       p.clear();
+
+      if (active_button){
+        p.image(start_button, p.width/2 - 150, p.height/2 - 100);
+        p.image(free_button, p.width/2 - 150, p.height/2);
+        // p.strokeWeight(1);
+        // p.stroke(215.6, 42.9, 24.7);
+        // p.fill(215.6, 42.9, 24.7);
+        // p.rect(p.width/2 - 110, p.height/2 + 10, 200, 100);
+        // p.fill(255);
+        // p.rect(p.width/2 - 100, p.height/2, 200, 100);
+        //p.text("TRATS", p.width/2 - 120, p.height/2 + 25);
+      }
+      else {
+        
+        p.drawCircle();
+      }
+
 
       elec = p.image(elec_inst, (instruments_pos[0].x - 32), (instruments_pos[0].y - 32), 64, 64);
       piano = p.image(piano_inst, (instruments_pos[1].x - 32), (instruments_pos[1].y - 32), 64, 64);
       bell = p.image(bell_inst, (instruments_pos[2].x - 32), (instruments_pos[2].y - 32), 64, 64);
 
-      p.drawCircle();
+      //
 
       if (detections != undefined) {
         if (detections.multiHandLandmarks != undefined) {
@@ -139,6 +166,19 @@ onMounted(() => {
           p.drawLandmarks([16, 17], 240); //ring finger
           p.drawLandmarks([20, 21], 300); //pinky
         }
+      }
+    };
+
+
+    p.StartGame = (x, y, finger_index) => {
+      if (finger_index == 8) {
+        if (x > p.width/2 - 150 && x < p.width/2 + 150 && y > p.height/2 - 100 && y < p.height/2 - 9) {
+          console.log("Start Game");
+          active_button = false;
+          p.drawCircle();
+          return;
+        }
+      return;
       }
     };
 
@@ -336,6 +376,9 @@ onMounted(() => {
           p.point(x, y);
           p.circleCrash(x, y - 100, j);
           p.changeActiveInstrument(x, y, j);
+          if(active_button){
+            p.StartGame(x,y,j);
+          }
         }
       }
     };
@@ -371,11 +414,13 @@ onMounted(() => {
   position: relative;
   z-index: 1;
   margin-top: -900px;
+  /* margin-top: 45px; */
   justify-content: space-around;
   margin-right: auto;
   margin-left: auto;
   text-align: center;
 }
+
 
 #input_video {
   transform: scale(-1, 1);
@@ -383,5 +428,42 @@ onMounted(() => {
   border: 3px #fff solid;
   border-radius: 10px;
   top: 150px;
+  /* margin-left: 110px; */
+  /* right: 0;
+  margin: 0 auto; */
 }
+
+/* @media (max-width: 1250px) {
+  #input_video {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #canvas {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 1650px) {
+  #input_video {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #canvas {
+    display: block;
+    justify-content: space-around;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+} */
 </style>
