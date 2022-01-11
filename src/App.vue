@@ -15,6 +15,9 @@
     <videoEl></videoEl>
   </div>
 
+  <div id = "p5sketch">
+  </div>
+
   <div class="rules">
     <h2>How to play ?</h2>
     <p>
@@ -28,7 +31,7 @@
   </div>
 
   <div class="footer">
-    <p class="footer_text">Made by WU Jianqiao and TEDJINI Meriem.</p>
+    <p class="footer_text">Made by WU Jianqiao, GUERRERO Johan and TEDJINI Meriem.</p>
   </div>
 </template>
 

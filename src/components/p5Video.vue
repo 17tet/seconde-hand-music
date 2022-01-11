@@ -72,8 +72,16 @@ onMounted(() => {
   let active_button = true;
   let start_button;
   let free_button;
+  let back_button;
+  let active_game = false;
+  let active_free = false;
+
+  let actual_score = 0;
+  let game_high_score = 0;
+  let free_high_score = 0;
 
   let area; // add
+
   let sketch = function (p) {
     p.preload = () => {
       music_bell[0] = p.loadSound("assets/DO_BELL.mp3");
@@ -118,6 +126,7 @@ onMounted(() => {
       
       start_button = p.loadImage("assets/start_button.png");
       free_button = p.loadImage("assets/free_button.png");
+      back_button = p.loadImage("assets/back_button.png");
     };
 
 
@@ -143,24 +152,38 @@ onMounted(() => {
       if (active_button){
         p.image(start_button, p.width/2 - 150, p.height/2 - 100);
         p.image(free_button, p.width/2 - 150, p.height/2);
-        // p.strokeWeight(1);
-        // p.stroke(215.6, 42.9, 24.7);
-        // p.fill(215.6, 42.9, 24.7);
-        // p.rect(p.width/2 - 110, p.height/2 + 10, 200, 100);
-        // p.fill(255);
-        // p.rect(p.width/2 - 100, p.height/2, 200, 100);
-        //p.text("TRATS", p.width/2 - 120, p.height/2 + 25);
       }
       else {
-        
+        if (active_game){
+          // Ajouter fonction de JOHAN
+          p.fill(255);
+          p.noStroke();
+          p.textSize(18);
+          p.text("Actual Score : " + actual_score, 50, 50);
+          p.text("High Score : " + game_high_score, 50, 75);
+          p.image(back_button, p.width - 114, 50);
+        }
+        else if (active_free){
+          
+          p.fill(255);
+          p.noStroke();
+          p.textSize(18);
+          p.text("Actual Score : " + actual_score, 50, 50);
+          p.text("High Score : " + free_high_score, 50, 75);
+
+          p.drawCircle();
+          p.image(back_button, p.width - 114, 50);
+          elec = p.image(elec_inst, (instruments_pos[0].x - 32), (instruments_pos[0].y - 32), 64, 64);
+          piano = p.image(piano_inst, (instruments_pos[1].x - 32), (instruments_pos[1].y - 32), 64, 64);
+          bell = p.image(bell_inst, (instruments_pos[2].x - 32), (instruments_pos[2].y - 32), 64, 64);
+        }
         p.playGameRun();
       }
 
-      elec = p.image(elec_inst, (instruments_pos[0].x - 32), (instruments_pos[0].y - 32), 64, 64);
-      piano = p.image(piano_inst, (instruments_pos[1].x - 32), (instruments_pos[1].y - 32), 64, 64);
-      bell = p.image(bell_inst, (instruments_pos[2].x - 32), (instruments_pos[2].y - 32), 64, 64);
 
-      //
+      // console.log("actual score : " + actual_score);
+      // console.log("high score : " + free_high_score);
+
 
       if (detections != undefined) {
         if (detections.multiHandLandmarks != undefined) {
@@ -184,16 +207,38 @@ onMounted(() => {
       }
     };
 
+    
 
-    p.StartGame = (x, y, finger_index) => {
+
+    p.ActivateButton = (x, y, finger_index) => {
       if (finger_index == 8) {
-        if (x > p.width/2 - 150 && x < p.width/2 + 150 && y > p.height/2 - 100 && y < p.height/2 - 9) {
+        if (active_button && x > p.width/2 - 150 && x < p.width/2 + 150 && y > p.height/2 - 100 && y < p.height/2 - 9) {
+          //AJOUTER TIMER
           console.log("Start Game");
           active_button = false;
+          active_game = true;
+          active_free = false;
           p.playGameRun();
           return;
         }
-      return;
+        if (active_button && x > p.width/2 - 150 && x < p.width/2 + 150 && y > p.height/2 && y < p.height/2 + 91) {
+          //AJOUTER TIMER
+          console.log("Free Mode");
+          active_button = false;
+          active_game = false;
+          active_free = true;
+          return;
+        }
+        if (active_button == false && x > p.width - 114 && x < p.width - 50 && y > 50 && y < 114) {
+          //AJOUTER TIMER
+          console.log("Back Menu");
+          active_button = true;
+          active_game = false;
+          active_free = false;
+          actual_score = 0;
+          return;
+        }
+        return;
       }
     };
 
@@ -351,6 +396,13 @@ onMounted(() => {
         if (p.dist(x, y, circles[i].x, circles[i].y) < circles[i].size) {
           // circles.splice(i,1)
           if (p.matchingColorwithFinger(finger_index, circles[i].a)) {
+            actual_score += 1;
+            if (active_game == true && game_high_score <= actual_score){
+              game_high_score = actual_score;
+            }
+            if (active_free == true && free_high_score <= actual_score){
+              free_high_score = actual_score;
+            }
             circles[i].size = 6;
             active_music[i].play();
           }
@@ -414,9 +466,7 @@ onMounted(() => {
           p.point(x, y);
           p.circleCrash(x, y - 100, j);
           p.changeActiveInstrument(x, y, j);
-          if(active_button){
-            p.StartGame(x,y,j);
-          }
+          p.ActivateButton(x,y,j);
         }
       }
     };
