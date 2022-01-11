@@ -155,7 +155,7 @@ onMounted(() => {
       }
       else {
         if (active_game){
-          // Ajouter fonction de JOHAN
+          p.playGameRun();
           p.fill(255);
           p.noStroke();
           p.textSize(18);
@@ -177,7 +177,6 @@ onMounted(() => {
           piano = p.image(piano_inst, (instruments_pos[1].x - 32), (instruments_pos[1].y - 32), 64, 64);
           bell = p.image(bell_inst, (instruments_pos[2].x - 32), (instruments_pos[2].y - 32), 64, 64);
         }
-        p.playGameRun();
       }
 
 
@@ -218,7 +217,6 @@ onMounted(() => {
           active_button = false;
           active_game = true;
           active_free = false;
-          p.playGameRun();
           return;
         }
         if (active_button && x > p.width/2 - 150 && x < p.width/2 + 150 && y > p.height/2 && y < p.height/2 + 91) {
