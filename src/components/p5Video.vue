@@ -162,6 +162,9 @@ onMounted(() => {
           p.text("Actual Score : " + actual_score, 50, 50);
           p.text("High Score : " + game_high_score, 50, 75);
           p.image(back_button, p.width - 114, 50);
+          elec = p.image(elec_inst, (instruments_pos[0].x - 32), (instruments_pos[0].y - 32), 64, 64);
+          piano = p.image(piano_inst, (instruments_pos[1].x - 32), (instruments_pos[1].y - 32), 64, 64);
+          bell = p.image(bell_inst, (instruments_pos[2].x - 32), (instruments_pos[2].y - 32), 64, 64);
         }
         else if (active_free){
           
@@ -178,10 +181,6 @@ onMounted(() => {
           bell = p.image(bell_inst, (instruments_pos[2].x - 32), (instruments_pos[2].y - 32), 64, 64);
         }
       }
-
-
-      // console.log("actual score : " + actual_score);
-      // console.log("high score : " + free_high_score);
 
 
       if (detections != undefined) {
