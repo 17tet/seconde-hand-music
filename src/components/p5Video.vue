@@ -54,10 +54,13 @@ onMounted(() => {
   const active_instrument = [];
   let active_music;
 
-  let elec;
-  let piano;
-  let bell;
+  let elec = 0;
+  let piano = 1;
+  let bell = 2;
+
   const instruments_pos = [{"x": 267,"y": 100},{"x": 400,"y": 100},{"x": 533,"y": 100}];
+  let notes_patterns;
+  let is_active_pattern = false
 
   let elec_inst;
   let piano_inst;
@@ -99,6 +102,19 @@ onMounted(() => {
       active_instrument[1] = p.loadImage("assets/active_piano.png");
       active_instrument[2] = p.loadImage("assets/active_bell.png");
 
+      const do_note = 60;
+      const sol_note = 120;
+      const la_note = 180;
+      const mi_note = 240;
+      const re_note = 300;
+
+      notes_patterns = {"testPattern" : [
+        {"note" : do_note, "x": 0, "y": 0, "delay": 0},
+        {"note" : re_note, "x": 50, "y": 0, "delay": 500},
+        {"note" : mi_note, "x": 100, "y": -20, "delay": 1200},
+        {"note" : la_note, "x": 125, "y": -60, "delay": 2000},
+        {"note" : sol_note, "x": 125, "y": -160, "delay": 2400},
+        ]}
       
       start_button = p.loadImage("assets/start_button.png");
       free_button = p.loadImage("assets/free_button.png");
@@ -113,11 +129,11 @@ onMounted(() => {
 
       active_music = music_piano;
 
-      elec_inst = instrument[0];
-      piano_inst = instrument[1];
-      bell_inst = instrument[2];
+      elec_inst = instrument[elec];
+      //piano_inst = instrument[piano];
+      bell_inst = instrument[bell];
 
-      piano_inst = active_instrument[1];
+      piano_inst = active_instrument[piano];
     };
 
 
@@ -137,9 +153,8 @@ onMounted(() => {
       }
       else {
         
-        p.drawCircle();
+        p.playGameRun();
       }
-
 
       elec = p.image(elec_inst, (instruments_pos[0].x - 32), (instruments_pos[0].y - 32), 64, 64);
       piano = p.image(piano_inst, (instruments_pos[1].x - 32), (instruments_pos[1].y - 32), 64, 64);
@@ -175,7 +190,7 @@ onMounted(() => {
         if (x > p.width/2 - 150 && x < p.width/2 + 150 && y > p.height/2 - 100 && y < p.height/2 - 9) {
           console.log("Start Game");
           active_button = false;
-          p.drawCircle();
+          p.playGameRun();
           return;
         }
       return;
@@ -188,67 +203,47 @@ onMounted(() => {
       let time_dif = 0;
       if (finger_index == 8) {
         time_dif = p.millis() - timer
-        if (p.dist(x, y, instruments_pos[0].x, instruments_pos[0].y) < 64) {
-          if (time_dif > 2000){
-            p.changeInstrument(1);
-            time_dif = 0
-          }else{
-            p.circle(instruments_pos[0].x, instruments_pos[0].y, 64 * (time_dif/2000));
+        let isOneSelected = false;
+        for (let instru = 0; instru < instrument.length ; instru++){
+          if (p.dist(x, y, instruments_pos[instru].x, instruments_pos[instru].y) < 64) {
+            if (time_dif > 2000){
+              p.changeInstrument(instru);
+            }else{
+              p.circle(instruments_pos[instru].x, instruments_pos[instru].y, 64 * (time_dif/2000));
+              isOneSelected = true
+            }
           }
-          return;
-        }else if (p.dist(x, y, instruments_pos[1].x, instruments_pos[1].y) < 64) {
-          //console.log("Middle");
-          if (time_dif > 2000){
-            p.changeInstrument(0);
-            time_dif = 0
-          }else{
-            p.circle(instruments_pos[1].x, instruments_pos[1].y, 64 * (time_dif/2000));
-          }
-          return;
-        }else if (p.dist(x, y, instruments_pos[2].x, instruments_pos[2].y) < 64) {
-          //console.log("Left");
-          if (time_dif > 2000){
-            p.changeInstrument(-1);
-            time_dif = 0
-          }else{
-            p.circle(instruments_pos[2].x, instruments_pos[2].y, 64 * (time_dif/2000));
-          }
-          return;
-        }else{
-          timer = p.millis();
         }
-        return;
+        if (!isOneSelected){
+          timer = p.millis();
+        };
       }
     };
 
     p.changeInstrument = (changement) => {
       console.log("Change instrument");
+      elec_inst = instrument[0];
+      piano_inst = instrument[1];
+      bell_inst = instrument[2];
       switch (changement) {
-        case -1:
-          elec_inst = instrument[0];
-          piano_inst = instrument[1];
-          bell_inst = active_instrument[2];
-          active_music = music_bell;
-          p.redraw();
+        case 0:
+          elec_inst = active_instrument[0];
+          active_music = music_elec;
           break;
         case 1:
-          elec_inst = active_instrument[0];
-          piano_inst = instrument[1];
-          bell_inst = instrument[2];
-          active_music = music_elec;
-          p.redraw();
-          break;
-        case 0:
-          elec_inst = instrument[0];
           piano_inst = active_instrument[1];
-          bell_inst = instrument[2];
           active_music = music_piano;
-          p.redraw();
+          break;
+        case 2:
+          bell_inst = active_instrument[2];
+          active_music = music_bell;
+          break;
       }
+      p.redraw();
     };
 
     p.drawCircle = () => {
-      if (circles.length < 5) {
+      if (circles.length < 50) {
         p.generateCircle(circles.length); // add
       } else {
         tt++;
@@ -271,6 +266,49 @@ onMounted(() => {
           tt = 0;
         }
       }
+    };
+
+    p.playGameRun = () => {
+      if (!is_active_pattern) {
+        p.generatePatternAt(notes_patterns["testPattern"], 400, 300); // add
+      } else {
+        tt++;
+        for (let i = 0; i < circles.length; i++) {
+          p.strokeWeight(4);
+          p.stroke(255);
+          p.fill(circles[i].a, 50, 255, 0.5);
+          p.circle(circles[i].x, circles[i].y + 100, circles[i].size);
+        }
+        if (tt > TIMEOUT) {
+          for (let i = 0; i < circles.length; i++) {
+            circles[i].size--;
+            if (circles[i].size < 5) {
+              circles.splice(i, 1);
+            }
+          }
+          tt = 0;
+        }
+      }
+    };
+
+    p.generatePatternAt = (pattern, x, y) => {
+      area = p.int(p.width / 9); // add
+      let b = p.random(0, 255);
+      let c = p.random(0, 255);
+      is_active_pattern = true;
+      for(let i=0 ; i < pattern.length ; i++){
+        setTimeout(()=>{
+          circles.push({
+          x: x + pattern[i].x,
+          y: y + pattern[i].y,
+          a: pattern[i].note,
+          b: b,
+          c: c,
+          size: 70,
+        });
+        }, pattern[i].delay)
+      }
+      setTimeout(()=>{is_active_pattern = false},pattern[pattern.length - 1].delay + TIMEOUT * 1000 )
     };
 
     p.matchingColorwithFinger = (finger_index, circle_color) => {
