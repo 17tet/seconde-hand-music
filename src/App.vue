@@ -28,7 +28,7 @@
   </div>
 
   <div class="footer">
-    <p class="footer_text">Made by WU Jianqiao and TEDJINI Meriem.</p>
+    <p class="footer_text">Made by WU Jianqiao, GUERRERO Johan and TEDJINI Meriem.</p>
   </div>
 </template>
 
