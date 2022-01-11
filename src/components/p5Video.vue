@@ -43,6 +43,7 @@ onMounted(() => {
   let canvas;
   let circles = [];
   let tt = 0;
+  let timer = 0;
   const TIMEOUT = 1;
 
   const music_bell = [];
@@ -56,6 +57,7 @@ onMounted(() => {
   let elec;
   let piano;
   let bell;
+  const instruments_pos = [{"x": 267,"y": 100},{"x": 400,"y": 100},{"x": 533,"y": 100}];
 
   let elec_inst;
   let piano_inst;
@@ -112,9 +114,9 @@ onMounted(() => {
     p.draw = function () {
       p.clear();
 
-      elec = p.image(elec_inst, p.width / 2 - 182, 50, 64, 64);
-      piano = p.image(piano_inst, p.width / 2 - 32, 50, 64, 64);
-      bell = p.image(bell_inst, p.width / 2 + 118, 50, 64, 64);
+      elec = p.image(elec_inst, (instruments_pos[0].x - 32), (instruments_pos[0].y - 32), 64, 64);
+      piano = p.image(piano_inst, (instruments_pos[1].x - 32), (instruments_pos[1].y - 32), 64, 64);
+      bell = p.image(bell_inst, (instruments_pos[2].x - 32), (instruments_pos[2].y - 32), 64, 64);
 
       p.drawCircle();
 
@@ -141,21 +143,39 @@ onMounted(() => {
     };
 
     p.changeActiveInstrument = (x, y, finger_index) => {
+      p.strokeWeight(0);
+      p.fill(0, 100, 255, 0.5);
+      let time_dif = 0;
       if (finger_index == 8) {
-        if (p.dist(x, y, p.width / 2 - 182, 50) < 64) {
-          console.log("Right");
-          p.changeInstrument(1);
+        time_dif = p.millis() - timer
+        if (p.dist(x, y, instruments_pos[0].x, instruments_pos[0].y) < 64) {
+          if (time_dif > 2000){
+            p.changeInstrument(1);
+            time_dif = 0
+          }else{
+            p.circle(instruments_pos[0].x, instruments_pos[0].y, 64 * (time_dif/2000));
+          }
           return;
-        }
-        if (p.dist(x, y, p.width / 2 - 32, 50) < 64) {
-          console.log("Middle");
-          p.changeInstrument(0);
+        }else if (p.dist(x, y, instruments_pos[1].x, instruments_pos[1].y) < 64) {
+          //console.log("Middle");
+          if (time_dif > 2000){
+            p.changeInstrument(0);
+            time_dif = 0
+          }else{
+            p.circle(instruments_pos[1].x, instruments_pos[1].y, 64 * (time_dif/2000));
+          }
           return;
-        }
-        if (p.dist(x, y, p.width / 2 + 118, 50) < 64) {
-          console.log("Left");
-          p.changeInstrument(-1);
+        }else if (p.dist(x, y, instruments_pos[2].x, instruments_pos[2].y) < 64) {
+          //console.log("Left");
+          if (time_dif > 2000){
+            p.changeInstrument(-1);
+            time_dif = 0
+          }else{
+            p.circle(instruments_pos[2].x, instruments_pos[2].y, 64 * (time_dif/2000));
+          }
           return;
+        }else{
+          timer = p.millis();
         }
         return;
       }
