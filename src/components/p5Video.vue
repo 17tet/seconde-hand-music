@@ -183,7 +183,7 @@ onMounted(() => {
     };
 
     p.changeActiveInstrument = (x, y, finger_index) => {
-      p.strokeWeight(0);
+      p.noStroke();
       p.fill(0, 100, 255, 0.5);
       let time_dif = 0;
       if (finger_index == 8) {
