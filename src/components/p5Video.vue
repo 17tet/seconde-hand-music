@@ -74,9 +74,11 @@ onMounted(() => {
   let active_free = false;
 
   let actual_score = 0;
-  let high_score = 0;
+  let game_high_score = 0;
+  let free_high_score = 0;
 
   let area; // add
+
   let sketch = function (p) {
     p.preload = () => {
       music_bell[0] = p.loadSound("assets/DO_BELL.mp3");
@@ -138,9 +140,21 @@ onMounted(() => {
       else {
         if (active_game){
           // Ajouter fonction de JOHAN
+          p.fill(255);
+          p.noStroke();
+          p.textSize(18);
+          p.text("Actual Score : " + actual_score, 50, 50);
+          p.text("High Score : " + game_high_score, 50, 75);
           p.image(back_button, p.width - 114, 50);
         }
         else if (active_free){
+          
+          p.fill(255);
+          p.noStroke();
+          p.textSize(18);
+          p.text("Actual Score : " + actual_score, 50, 50);
+          p.text("High Score : " + free_high_score, 50, 75);
+
           p.drawCircle();
           p.image(back_button, p.width - 114, 50);
           elec = p.image(elec_inst, (instruments_pos[0].x - 32), (instruments_pos[0].y - 32), 64, 64);
@@ -150,8 +164,8 @@ onMounted(() => {
       }
 
 
-      console.log("actual score : " + actual_score);
-      console.log("high score : " + high_score);
+      // console.log("actual score : " + actual_score);
+      // console.log("high score : " + free_high_score);
 
 
       if (detections != undefined) {
@@ -175,6 +189,8 @@ onMounted(() => {
         }
       }
     };
+
+    
 
 
     p.ActivateButton = (x, y, finger_index) => {
@@ -340,8 +356,11 @@ onMounted(() => {
           // circles.splice(i,1)
           if (p.matchingColorwithFinger(finger_index, circles[i].a)) {
             actual_score += 1;
-            if (high_score <= actual_score){
-              high_score = actual_score;
+            if (active_game == true && game_high_score <= actual_score){
+              game_high_score = actual_score;
+            }
+            if (active_free == true && free_high_score <= actual_score){
+              free_high_score = actual_score;
             }
             circles[i].size = 6;
             active_music[i].play();

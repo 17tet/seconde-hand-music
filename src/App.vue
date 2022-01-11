@@ -15,6 +15,9 @@
     <videoEl></videoEl>
   </div>
 
+  <div id = "p5sketch">
+  </div>
+
   <div class="rules">
     <h2>How to play ?</h2>
     <p>
