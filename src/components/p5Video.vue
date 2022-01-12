@@ -135,18 +135,18 @@ onMounted(() => {
 
       notes_patterns = [
         [
-        {"note" : do_note, "x": 0, "y": 0, "delay": 0},
-        {"note" : re_note, "x": 50, "y": 0, "delay": 500},
-        {"note" : mi_note, "x": 100, "y": -20, "delay": 1200},
-        {"note" : la_note, "x": 125, "y": -60, "delay": 2000},
-        {"note" : sol_note, "x": 125, "y": -160, "delay": 2400},
+        {"note" : do_note, "x": 0, "y": 0, "delay": 0, "size" : 80},
+        {"note" : re_note, "x": 50, "y": 0, "delay": 500, "size" : 120},
+        {"note" : mi_note, "x": 100, "y": -20, "delay": 1200, "size" : 70},
+        {"note" : la_note, "x": 125, "y": -60, "delay": 2000, "size" : 80},
+        {"note" : sol_note, "x": 125, "y": -160, "delay": 2400, "size" : 100},
         ],
         [
-        {"note" : do_note, "x": -50, "y": 0, "delay": 0},
-        {"note" : re_note, "x": -100, "y": 0, "delay": 500},
-        {"note" : mi_note, "x": -125, "y": 20, "delay": 1200},
-        {"note" : re_note, "x": -150, "y": 60, "delay": 2000},
-        {"note" : do_note, "x": -175, "y": 100, "delay": 2400},
+        {"note" : do_note, "x": -50, "y": 0, "delay": 0, "size" : 80},
+        {"note" : re_note, "x": -100, "y": 0, "delay": 500, "size" : 80},
+        {"note" : mi_note, "x": -125, "y": 20, "delay": 1200, "size" : 80},
+        {"note" : re_note, "x": -150, "y": 60, "delay": 2000, "size" : 80},
+        {"note" : do_note, "x": -175, "y": 100, "delay": 2400, "size" : 80},
         ]
       ]
       
@@ -181,12 +181,13 @@ onMounted(() => {
       }
       else {
         if (active_game){
-          p.playGameRun();
           p.fill(255);
           p.noStroke();
           p.textSize(18);
           p.text("Actual Score : " + actual_score, 50, 50);
           p.text("High Score : " + game_high_score, 50, 75);
+
+          p.playGameRun();
           p.image(back_button, p.width - 114, 50);
           elec = p.image(elec_inst, (instruments_pos[0].x - 32), (instruments_pos[0].y - 32), 64, 64);
           piano = p.image(piano_inst, (instruments_pos[1].x - 32), (instruments_pos[1].y - 32), 64, 64);
@@ -242,6 +243,7 @@ onMounted(() => {
           active_button = false;
           active_game = true;
           active_free = false;
+          p.redraw();
           return;
         }
         if (active_button && x > p.width/2 - 150 && x < p.width/2 + 150 && y > p.height/2 && y < p.height/2 + 91) {
@@ -250,6 +252,7 @@ onMounted(() => {
           active_button = false;
           active_game = false;
           active_free = true;
+          p.redraw();
           return;
         }
         if (active_button == false && x > p.width - 114 && x < p.width - 50 && y > 50 && y < 114) {
@@ -259,6 +262,7 @@ onMounted(() => {
           active_game = false;
           active_free = false;
           actual_score = 0;
+          p.redraw();
           return;
         }
         return;
@@ -380,7 +384,7 @@ onMounted(() => {
           a: pattern[i].note,
           b: b,
           c: c,
-          size: 70,
+          size: pattern[i].size,
           timeref : p.millis()
         });
         }, pattern[i].delay)
