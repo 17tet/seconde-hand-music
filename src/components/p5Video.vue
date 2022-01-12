@@ -59,7 +59,7 @@ onMounted(() => {
   let bell = 2;
 
   const instruments_pos = [{"x": 267,"y": 100},{"x": 400,"y": 100},{"x": 533,"y": 100}];
-  let notes_patterns;
+  let notes_patterns = [];
   let is_active_pattern = false
 
   let elec_inst;
@@ -116,13 +116,22 @@ onMounted(() => {
       const mi_note = 240;
       const re_note = 300;
 
-      notes_patterns = {"testPattern" : [
+      notes_patterns = [
+        [
         {"note" : do_note, "x": 0, "y": 0, "delay": 0},
         {"note" : re_note, "x": 50, "y": 0, "delay": 500},
         {"note" : mi_note, "x": 100, "y": -20, "delay": 1200},
         {"note" : la_note, "x": 125, "y": -60, "delay": 2000},
         {"note" : sol_note, "x": 125, "y": -160, "delay": 2400},
-        ]}
+        ],
+        [
+        {"note" : do_note, "x": -50, "y": 0, "delay": 0},
+        {"note" : re_note, "x": -100, "y": 0, "delay": 500},
+        {"note" : mi_note, "x": -125, "y": 20, "delay": 1200},
+        {"note" : re_note, "x": -150, "y": 60, "delay": 2000},
+        {"note" : do_note, "x": -175, "y": 100, "delay": 2400},
+        ]
+      ]
       
       start_button = p.loadImage("assets/start_button.png");
       free_button = p.loadImage("assets/free_button.png");
@@ -312,7 +321,8 @@ onMounted(() => {
 
     p.playGameRun = () => {
       if (!is_active_pattern) {
-        p.generatePatternAt(notes_patterns["testPattern"], 400, 300); // add
+        console.log(Math.floor(Math.random()),(notes_patterns.length))
+        p.generatePatternAt(notes_patterns[Math.floor(Math.random()*notes_patterns.length)], 400, 300); // add
       } else {
         tt++;
         for (let i = 0; i < circles.length; i++) {
@@ -401,7 +411,7 @@ onMounted(() => {
               free_high_score = actual_score;
             }
             circles[i].size = 6;
-            active_music[i].play();
+            active_music[colorbank.indexOf(circles[i].a)].play();
           }
         }
       }
