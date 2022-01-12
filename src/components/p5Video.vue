@@ -44,7 +44,8 @@ onMounted(() => {
   let circles = [];
   let tt = 0;
   let timer = 0;
-  const TIMEOUT = 1;
+  // milliseconds
+  const TIMEOUT = 2000;
 
   const music_bell = [];
   const music_piano = [];
@@ -60,6 +61,7 @@ onMounted(() => {
 
   const instruments_pos = [{"x": 267,"y": 100},{"x": 400,"y": 100},{"x": 533,"y": 100}];
   let notes_patterns = [];
+  let free_mode_pattern = [];
   let is_active_pattern = false
 
   let elec_inst;
@@ -115,6 +117,21 @@ onMounted(() => {
       const la_note = 180;
       const mi_note = 240;
       const re_note = 300;
+
+      free_mode_pattern = 
+      [
+        [{"note" : re_note, "x": 333, "y": -100, "delay": 0},],
+        [{"note" : mi_note, "x": 266, "y": -100, "delay": 0},],
+        [{"note" : la_note, "x": 200, "y": -100, "delay": 0},],
+        [{"note" : sol_note, "x": 133, "y": -100, "delay": 0},],
+        [{"note" : do_note, "x": 66, "y": -100, "delay": 0},],
+        
+        [{"note" : do_note, "x": -66, "y": -100, "delay": 0},],
+        [{"note" : sol_note, "x": -133, "y": -100, "delay": 0},],
+        [{"note" : la_note, "x": -200, "y": -100, "delay": 0},],
+        [{"note" : mi_note, "x": -266, "y": -100, "delay": 0},],
+        [{"note" : re_note, "x": -333, "y": -100, "delay": 0},],
+      ]
 
       notes_patterns = [
         [
@@ -294,51 +311,58 @@ onMounted(() => {
     };
 
     p.drawCircle = () => {
-      if (circles.length < 50) {
-        p.generateCircle(circles.length); // add
+      if (circles.length < 5) {
+        if (!is_active_pattern) {
+          for (let i = 0 ; i < free_mode_pattern.length; i++){
+            p.generatePatternAt(free_mode_pattern[i], 400, 300); // add
+          }
+        }
       } else {
-        tt++;
+        // tt++;
+        // for (let i = 0; i < circles.length; i++) {
+        //   p.strokeWeight(4);
+        //   p.stroke(255);
+        //   p.fill(circles[i].a, 50, 255, 0.5);
+        //   p.circle(circles[i].x, circles[i].y + 100, circles[i].size);
+        // }
+        // if (tt > TIMEOUT) {
+        //   for (let i = 0; i < circles.length; i++) {
+        //     circles[i].size--;
+        //     if (circles[i].size < 5) {
+        //       circles[i].size = p.random(50, area); // add// add
+        //       circles[i].y = p.random(50, p.height); // add
+        //       // circles.splice(i,1)
+        //       // music[i].play();
+        //     }
+        //   }
+        //   tt = 0;
+        // }
         for (let i = 0; i < circles.length; i++) {
           p.strokeWeight(4);
           p.stroke(255);
           p.fill(circles[i].a, 50, 255, 0.5);
-          p.circle(circles[i].x, circles[i].y + 100, circles[i].size);
-        }
-        if (tt > TIMEOUT) {
-          for (let i = 0; i < circles.length; i++) {
-            circles[i].size--;
-            if (circles[i].size < 5) {
-              circles[i].size = p.random(50, area); // add// add
-              circles[i].y = p.random(50, p.height); // add
-              // circles.splice(i,1)
-              // music[i].play();
-            }
+          let coef = (p.millis() - circles[i].timeref) / TIMEOUT ;
+          p.circle(circles[i].x, circles[i].y + 100, circles[i].size * (1 - coef));
+          if (p.millis() - circles[i].timeref > TIMEOUT) {
+            circles.splice(i, 1);
           }
-          tt = 0;
         }
       }
     };
 
     p.playGameRun = () => {
       if (!is_active_pattern) {
-        console.log(Math.floor(Math.random()),(notes_patterns.length))
         p.generatePatternAt(notes_patterns[Math.floor(Math.random()*notes_patterns.length)], 400, 300); // add
       } else {
-        tt++;
         for (let i = 0; i < circles.length; i++) {
           p.strokeWeight(4);
           p.stroke(255);
           p.fill(circles[i].a, 50, 255, 0.5);
-          p.circle(circles[i].x, circles[i].y + 100, circles[i].size);
-        }
-        if (tt > TIMEOUT) {
-          for (let i = 0; i < circles.length; i++) {
-            circles[i].size--;
-            if (circles[i].size < 5) {
-              circles.splice(i, 1);
-            }
+          let coef = (p.millis() - circles[i].timeref) / TIMEOUT ;
+          p.circle(circles[i].x, circles[i].y + 100, circles[i].size * (1 - coef));
+          if (p.millis() - circles[i].timeref > TIMEOUT) {
+            circles.splice(i, 1);
           }
-          tt = 0;
         }
       }
     };
@@ -357,10 +381,11 @@ onMounted(() => {
           b: b,
           c: c,
           size: 70,
+          timeref : p.millis()
         });
         }, pattern[i].delay)
       }
-      setTimeout(()=>{is_active_pattern = false},pattern[pattern.length - 1].delay + TIMEOUT * 1000 )
+      setTimeout(()=>{is_active_pattern = false},pattern[pattern.length - 1].delay + TIMEOUT )
     };
 
     p.matchingColorwithFinger = (finger_index, circle_color) => {
@@ -419,10 +444,6 @@ onMounted(() => {
 
     p.generateCircle = (index) => {
       area = p.int(p.width / 9); // add
-      console.log(
-        20 + index * (area + area),
-        20 + index * (area + area) + area
-      );
       let x = p.random(
         -8 + index * (area + area),
         -8 + index * (area + area) + area
@@ -440,8 +461,10 @@ onMounted(() => {
         b: b,
         c: c,
         size: p.random(60, area),
+        timeref: p.millis()
       });
     };
+
     p.drawHands = function () {
       for (let i = 0; i < detections.multiHandLandmarks.length; i++) {
         for (let j = 0; j < detections.multiHandLandmarks[i].length; j++) {
