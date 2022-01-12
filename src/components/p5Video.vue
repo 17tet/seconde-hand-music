@@ -135,18 +135,18 @@ onMounted(() => {
 
       notes_patterns = [
         [
-        {"note" : do_note, "x": 0, "y": 0, "delay": 0, "size" : 80},
-        {"note" : re_note, "x": 50, "y": 0, "delay": 500, "size" : 120},
-        {"note" : mi_note, "x": 100, "y": -20, "delay": 1200, "size" : 70},
-        {"note" : la_note, "x": 125, "y": -60, "delay": 2000, "size" : 80},
-        {"note" : sol_note, "x": 125, "y": -160, "delay": 2400, "size" : 100},
+        {"note" : do_note, "x": 0, "y": 0, "delay": 0},
+        {"note" : re_note, "x": 50, "y": 0, "delay": 500},
+        {"note" : mi_note, "x": 100, "y": -20, "delay": 1200},
+        {"note" : la_note, "x": 125, "y": -60, "delay": 2000},
+        {"note" : sol_note, "x": 125, "y": -160, "delay": 2400},
         ],
         [
-        {"note" : do_note, "x": -50, "y": 0, "delay": 0, "size" : 80},
-        {"note" : re_note, "x": -100, "y": 0, "delay": 500, "size" : 80},
-        {"note" : mi_note, "x": -125, "y": 20, "delay": 1200, "size" : 80},
-        {"note" : re_note, "x": -150, "y": 60, "delay": 2000, "size" : 80},
-        {"note" : do_note, "x": -175, "y": 100, "delay": 2400, "size" : 80},
+        {"note" : do_note, "x": -50, "y": 0, "delay": 0},
+        {"note" : re_note, "x": -100, "y": 0, "delay": 500},
+        {"note" : mi_note, "x": -125, "y": 20, "delay": 1200},
+        {"note" : re_note, "x": -150, "y": 60, "delay": 2000},
+        {"note" : do_note, "x": -175, "y": 100, "delay": 2400},
         ]
       ]
       
@@ -384,7 +384,7 @@ onMounted(() => {
           a: pattern[i].note,
           b: b,
           c: c,
-          size: pattern[i].size,
+          size: 70,
           timeref : p.millis()
         });
         }, pattern[i].delay)
